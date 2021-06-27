@@ -1,0 +1,47 @@
+IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'bankingdb')
+	BEGIN
+		CREATE DATABASE bankingdb;
+	END
+GO
+
+USE bankingdb
+
+DROP TABLE IF EXISTS tb_UserTransactionHistory;
+DROP TABLE IF EXISTS tb_AccountType;
+DROP TABLE IF EXISTS tb_User;
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'tb_User')
+	BEGIN
+		CREATE TABLE tb_User (
+		  UserId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+		  Firstnames VARCHAR(MAX) NOT NULL,
+		  Surname VARCHAR(MAX) NOT NULL
+		);
+	END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'tb_AccountType')
+	BEGIN
+		CREATE TABLE tb_AccountType (
+		  AccountTypeId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+		  AccountType VARCHAR(MAX) NOT NULL
+		);
+	END
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = N'tb_UserTransactionHistory')
+	BEGIN
+		CREATE TABLE tb_UserTransactionHistory (
+		  UserTransactionHistoryId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+		  UserId INT NOT NULL FOREIGN KEY REFERENCES tb_User(UserId),
+		  AccountTypeId INT NOT NULL FOREIGN KEY REFERENCES tb_AccountType(AccountTypeId),
+		  Amount DECIMAL NOT NULL DEFAULT 0,
+		);
+	END
+GO
+
+INSERT INTO tb_AccountType
+VALUES ('Savings')
+
+INSERT INTO tb_AccountType
+VALUES ('Current')
